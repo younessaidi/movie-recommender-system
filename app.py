@@ -5,7 +5,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 st.title('🎬 AI Movie Recommender System')
-st.write('Créé par les étudiants de 1 AP - EMSI')
+st.write('Créé par les étudiants Younes , Zaineb , Yasmine , Lina')
 
 movies_dict = pickle.load(open('movie_dict.pkl', 'rb'))
 movies = pd.DataFrame(movies_dict)

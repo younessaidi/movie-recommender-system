@@ -1,21 +1,21 @@
 import streamlit as st
 import pickle
 import pandas as pd
+from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-# 1. إعطاء عنوان للموقع
 st.title('🎬 AI Movie Recommender System')
-st.write('Créé par Younes , zaineb , Yasmine , Lina')
+st.write('Créé par les étudiants de 1 AP - EMSI')
 
-# 2. جلب البيانات (الجدول والمتجهات المضغوطة)
+# جلب الداتا الخفيفة فقط
 movies_dict = pickle.load(open('movie_dict.pkl', 'rb'))
 movies = pd.DataFrame(movies_dict)
-vectors = pickle.load(open('vectors.pkl', 'rb'))
 
-# 3. حساب مصفوفة التشابه هنا (بسرعة فائقة)
+# حساب التشابه مباشرة في الموقع (كياخد أقل من ثانية حيت هما غير 1500 فيلم)
+cv = CountVectorizer(max_features=5000, stop_words='english')
+vectors = cv.fit_transform(movies['tags']).toarray()
 similarity = cosine_similarity(vectors)
 
-# 4. دالة الاقتراح
 def recommend(movie):
     movie_index = movies[movies['title'] == movie].index[0]
     distances = similarity[movie_index]
@@ -26,16 +26,13 @@ def recommend(movie):
         recommended_movies.append(movies.iloc[i[0]].title)
     return recommended_movies
 
-# 5. تصميم الواجهة
 selected_movie_name = st.selectbox(
     'اختر فيلما يعجبك / Sélectionnez un film :',
     movies['title'].values
 )
 
-# 6. زر الاقتراح
 if st.button('Recommander 🚀'):
     recommendations = recommend(selected_movie_name)
-    
     st.write("### الأفلام المقترحة لك:")
     for i in recommendations:
         st.success(i)
